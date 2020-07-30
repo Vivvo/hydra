@@ -95,6 +95,9 @@ func (h *MigrateHandler) MigrateSQL(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	_, err = reg.DB().Exec("set session sql_require_primary_key=0;")
+	cmdx.Must(err, "An error occurred during set session sql_require_primary_key=0: %s", err)
+
 	n, err := reg.CreateSchemas(scheme)
 	cmdx.Must(err, "An error occurred while connecting to SQL: %s", err)
 	fmt.Printf("Successfully applied %d SQL migrations!\n", n)

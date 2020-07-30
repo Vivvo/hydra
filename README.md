@@ -1,3 +1,38 @@
+<h1>Notes for Vivvo</h1>
+As of July 30, 2020 use the tagged version v1.4.6!!
+
+This is a forked version of Hydra due to incompatibilities between Hydra and Digital Ocean MySQL managed databases.
+
+Digital Ocean mysql managed databases since April 8, 2020 began enforcing primary keys on all tables.
+Currently all versions of Hydra have migrations that are missing primary keys:
+```
+~v1.4.6+ - 4.sql drops primary key in a statement before creating the new primary key (should be done in 1 statement)
+v1.6.0+ - new migration tool gouffalo/Pop tries to create a migration table with no PK
+```
+
+Digital Ocean offered to manually disable the global `sql_require_primary_key=0` for us, however it is unrealistic to send a support ticket for every new database we create.
+
+This fork contains the addition of `set session sql_require_primary_key=0;` inside `/cmd/cli/handler_migrate.go`.
+
+To build this fork:
+```
+go get -u github.com/jteeuwen/go-bindata/...
+go get -u github.com/gobuffalo/packr/v2/...
+make docker
+docker tag oryd/hydra:latest docker.pkg.github.com/vivvo/hydra/hydra:v1.4.6
+docker push docker.pkg.github.com/vivvo/hydra/hydra:v1.4.6
+```
+
+In the helm charts we must specify our forked image, for example:
+```
+hydra:
+  image:
+    repository: docker.pkg.github.com/vivvo/hydra/hydra
+  imagePullSecret: [
+    name: regcred
+  ]
+```
+
 <h1 align="center"><img src=".github/banner_hydra.svg" alt="ORY Hydra - Open Source OAuth 2 and OpenID Connect server"></h1>
 
 <h4 align="center">
