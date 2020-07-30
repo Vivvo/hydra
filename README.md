@@ -1,6 +1,4 @@
 <h1>Notes for Vivvo</h1>
-As of July 30, 2020 use the tagged version v1.4.6!!
-
 This is a forked version of Hydra due to incompatibilities between Hydra and Digital Ocean MySQL managed databases.
 
 Digital Ocean mysql managed databases since April 8, 2020 began enforcing primary keys on all tables.
